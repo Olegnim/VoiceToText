@@ -11,6 +11,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -26,19 +27,28 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
     lateinit var micImage: ImageView
     private lateinit var textOutput: TextView
     lateinit var comment: TextView
+    lateinit var clearButton: Button
     private val REQUEST_CODE_SPEECH_INPUT = 1
     lateinit var speechRecognizer: SpeechRecognizer
     var recordStatus = false
-
+    var manualStopRecord = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewInit()
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        speechRecognizer.setRecognitionListener(this)
+    }
+
+    private fun viewInit() {
         micImage = findViewById(R.id.image_mic)
         textOutput = findViewById(R.id.output_text)
         comment = findViewById(R.id.comment)
-        comment.text = "Нажмите на микрофон что бы начать запись"
+        comment.text = this.getString(R.string.touch_to_start)
+        clearButton = findViewById(R.id.clear_button)
 
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -53,19 +63,20 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
             val clip = ClipData.newPlainText("", textOutput.text.toString())
             clipboard.setPrimaryClip(clip)
             Toast.makeText(
-                this@MainActivity, "Текст скопирован в буфер обмена",
+                this@MainActivity, this.getString(R.string.text_copy_to_clipboard),
                 Toast.LENGTH_SHORT
             ).show()
         }
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
-        speechRecognizer.setRecognitionListener(this)
         micImage.setOnClickListener {
             if (recordStatus) {
+                manualStopRecord = true
                 stopRecord()
             } else {
+                manualStopRecord = false
                 startRecord()
             }
         }
+        clearButton.setOnClickListener { textOutput.text = "" }
     }
 
     override fun onReadyForSpeech(p0: Bundle?) {
@@ -77,7 +88,6 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
     }
 
     override fun onRmsChanged(p0: Float) {
-        Log.e("RecognitionListener", "onRmsChanged $p0")
     }
 
     override fun onBufferReceived(p0: ByteArray?) {
@@ -90,8 +100,14 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
 
     override fun onError(p0: Int) {
         speechRecognizer.cancel()
-        if (p0 == 7) {
-            comment.text = "Не могу распознать речь"
+        if (p0 == 7 || (p0 == 5 && !manualStopRecord)) {
+            comment.text = this.getString(R.string.error_7)
+            startRecord()
+        } else {
+            Toast.makeText(
+                this@MainActivity, this.getString(R.string.error_x, p0),
+                Toast.LENGTH_SHORT
+            ).show()
         }
         Log.e("RecognitionListener", "onError $p0")
     }
@@ -100,16 +116,16 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
         Log.e("RecognitionListener", "onResults $p0")
         stopRecord()
         micImage.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_mic_none_24))
-        try {
-            val data: ArrayList<String>? =
-                p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            textOutput.text = data?.get(0)
-        } catch (e: Exception) {
-            Toast.makeText(
-                this@MainActivity, " " + e.message,
-                Toast.LENGTH_SHORT
-            ).show()
+
+        val data: ArrayList<String>? =
+            p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+        var allOutputText: String = textOutput.text.toString()
+        if (allOutputText == this.getString(R.string.text_will_be_here)) {
+            allOutputText = ""
         }
+        allOutputText += " "
+        allOutputText += data?.get(0)
+        textOutput.text = allOutputText
     }
 
     override fun onPartialResults(p0: Bundle?) {
@@ -134,7 +150,7 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
     }
 
     private fun stopRecord() {
-        comment.text = "Нажмите на микрофон что бы начать запись"
+        comment.text = this.getString(R.string.touch_to_start)
         micImage.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_mic_none_24))
         recordStatus = false
         speechRecognizer.stopListening()
@@ -155,7 +171,7 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
             30000
         )
         speechRecognizer.startListening(intent)
-        comment.text = "Идет запись..."
+        comment.text = this.getString(R.string.recording_in_progress)
         micImage.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_mic_24))
         recordStatus = true
     }
