@@ -29,7 +29,7 @@
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@+id/image_mic" />
 
-    <TextView
+    <EditText
         android:id="@+id/output_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,6 +39,8 @@
         android:textAlignment="textStart"
         android:textColor="@color/black"
         android:textSize="14sp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         app:layout_constraintBottom_toTopOf="@+id/clear_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,6 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/clear_btn"
+        android:layout_margin="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

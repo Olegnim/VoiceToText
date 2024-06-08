@@ -11,6 +11,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import android.view.Gravity
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
         ) {
             checkPermission()
         }
+        textOutput.gravity = Gravity.LEFT
         textOutput.setOnClickListener {
             val clipboard: ClipboardManager =
                 this.baseContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
