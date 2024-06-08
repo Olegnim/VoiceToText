@@ -19,19 +19,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.util.*
+import java.util.Locale
 
 
 class MainActivity : AppCompatActivity(), RecognitionListener {
 
-    lateinit var micImage: ImageView
+    private lateinit var micImage: ImageView
     private lateinit var textOutput: TextView
-    lateinit var comment: TextView
-    lateinit var clearButton: Button
+    private lateinit var comment: TextView
+    private lateinit var clearButton: Button
     private val REQUEST_CODE_SPEECH_INPUT = 1
-    lateinit var speechRecognizer: SpeechRecognizer
-    var recordStatus = false
-    var manualStopRecord = false
+    private lateinit var speechRecognizer: SpeechRecognizer
+    private var recordStatus = false
+    private var manualStopRecord = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

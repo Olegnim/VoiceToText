@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Voice to text</string>
+    <string name="text_will_be_here">Распознанный текст появится здесь</string>
+    <string name="start_record">Начать запись</string>
+    <string name="error_7">Не могу распознать речь</string>
+    <string name="touch_to_start">Нажмите на микрофон что бы начать запись</string>
+    <string name="text_copy_to_clipboard">Текст скопирован в буфер обмена</string>
+    <string name="recording_in_progress">Идет запись…</string>
+    <string name="error_x">Ошибка %1$o</string>
+    <string name="info">Статус</string>
+    <string name="clear_btn">Очистить записанный текст</string>
+</resources>
